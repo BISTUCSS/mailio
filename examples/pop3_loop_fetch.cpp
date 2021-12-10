@@ -16,7 +16,10 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 
 #include <mailio/message.hpp>
 #include <mailio/pop3.hpp>
+#include <boost/thread.hpp>
 #include <iostream>
+//#include "MyThread.h"
+#include "mailio/MyThead.h"
 
 
 using mailio::message;
@@ -27,6 +30,23 @@ using mailio::dialog_error;
 using std::cout;
 using std::endl;
 
+
+class MsgThread : public Thread {
+    message msg;
+public:
+    MsgThread(int a, message &msg) : Thread(a) {
+        this->msg = msg;
+    }
+
+    void run() {
+        cout << msg.content() << endl;
+    }
+};
+
+void handle(message msg) {
+    cout << "current mail content: " << msg.content() << endl;
+    cout << endl;
+}
 
 int main() {
     try {
@@ -56,13 +76,13 @@ int main() {
 //            conn.authenticate(dovecotServerAuthUsername, dovecotServerAuthPassword, pop3s::auth_method_t::LOGIN);
             mailio::pop3::mailbox_stat_t mail_info = conn.statistics();
             mail_no = mail_info.messages_no;
-            if(mail_no >= mail_cursor) {
+            if (mail_no >= mail_cursor) {
                 conn.fetch(mail_cursor, msg);
-                cout << "mail no: " << mail_no << endl;
-                cout << "current mail index: " << mail_cursor << endl;
-                cout << "current mail content: " << msg.content()<< endl;
-                cout << endl;
-                mail_cursor ++;
+                //boost::thread thread(handle);
+
+                (new MsgThread(1, msg))->start();
+
+                mail_cursor++;
             }
 
         }
