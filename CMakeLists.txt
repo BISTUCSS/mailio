@@ -4,44 +4,48 @@ project(mailio VERSION 0.21.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+
+
+
 if(NOT DEFINED LIB_SUFFIX)
-  set(LIB_SUFFIX "" CACHE STRING "Suffix for installed library path. Ex. 64 for lib64")
+    set(LIB_SUFFIX "" CACHE STRING "Suffix for installed library path. Ex. 64 for lib64")
 endif(NOT DEFINED LIB_SUFFIX)
 
 # Set bindir, if not use -DBIN_INSTALL_DIR
 if(NOT BIN_INSTALL_DIR)
-  if(CMAKE_INSTALL_BINDIR)
-    set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
-  else(CMAKE_INSTALL_BINDIR)
-    set(BIN_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-  endif(CMAKE_INSTALL_BINDIR)
+    if(CMAKE_INSTALL_BINDIR)
+        set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
+    else(CMAKE_INSTALL_BINDIR)
+        set(BIN_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+    endif(CMAKE_INSTALL_BINDIR)
 endif(NOT BIN_INSTALL_DIR)
 
 # Set libdir, if not use -DLIB_INSTALL_DIR
 if(NOT LIB_INSTALL_DIR)
-  if(CMAKE_INSTALL_LIBDIR)
-    set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-  else(CMAKE_INSTALL_LIBDIR)
-    set(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
-  endif(CMAKE_INSTALL_LIBDIR)
+    if(CMAKE_INSTALL_LIBDIR)
+        set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
+    else(CMAKE_INSTALL_LIBDIR)
+        set(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
+    endif(CMAKE_INSTALL_LIBDIR)
 endif(NOT LIB_INSTALL_DIR)
 
 # Set includedir, if not use -DINCLUDE_INSTALL_DIR
 if(NOT INCLUDE_INSTALL_DIR)
-  if(CMAKE_INSTALL_INCLUDEDIR)
-    set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-  else(CMAKE_INSTALL_INCLUDEDIR)
-    set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
-  endif(CMAKE_INSTALL_INCLUDEDIR)
+    if(CMAKE_INSTALL_INCLUDEDIR)
+        set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
+    else(CMAKE_INSTALL_INCLUDEDIR)
+        set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
+    endif(CMAKE_INSTALL_INCLUDEDIR)
 endif(NOT INCLUDE_INSTALL_DIR)
 
 # Set sharedir, if not use -DSHARE_INSTALL_DIR
 if(NOT SHARE_INSTALL_DIR)
-  if(CMAKE_INSTALL_DATADIR)
-    set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}")
-  else(CMAKE_INSTALL_DATADIR)
-    set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share")
-  endif(CMAKE_INSTALL_DATADIR)
+    if(CMAKE_INSTALL_DATADIR)
+        set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}")
+    else(CMAKE_INSTALL_DATADIR)
+        set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share")
+    endif(CMAKE_INSTALL_DATADIR)
 endif(NOT SHARE_INSTALL_DIR)
 
 # options for mailio to control how the project is built.
@@ -65,38 +69,38 @@ find_package(Threads)
 
 
 set(project_sources
-    ${PROJECT_SOURCE_DIR}/src/base64.cpp
-    ${PROJECT_SOURCE_DIR}/src/binary.cpp
-    ${PROJECT_SOURCE_DIR}/src/bit7.cpp
-    ${PROJECT_SOURCE_DIR}/src/bit8.cpp
-    ${PROJECT_SOURCE_DIR}/src/codec.cpp
-    ${PROJECT_SOURCE_DIR}/src/dialog.cpp
-    ${PROJECT_SOURCE_DIR}/src/imap.cpp
-    ${PROJECT_SOURCE_DIR}/src/mailboxes.cpp
-    ${PROJECT_SOURCE_DIR}/src/message.cpp
-    ${PROJECT_SOURCE_DIR}/src/mime.cpp
-    ${PROJECT_SOURCE_DIR}/src/pop3.cpp
-    ${PROJECT_SOURCE_DIR}/src/quoted_printable.cpp
-    ${PROJECT_SOURCE_DIR}/src/q_codec.cpp
-    ${PROJECT_SOURCE_DIR}/src/smtp.cpp
-)
+        ${PROJECT_SOURCE_DIR}/src/base64.cpp
+        ${PROJECT_SOURCE_DIR}/src/binary.cpp
+        ${PROJECT_SOURCE_DIR}/src/bit7.cpp
+        ${PROJECT_SOURCE_DIR}/src/bit8.cpp
+        ${PROJECT_SOURCE_DIR}/src/codec.cpp
+        ${PROJECT_SOURCE_DIR}/src/dialog.cpp
+        ${PROJECT_SOURCE_DIR}/src/imap.cpp
+        ${PROJECT_SOURCE_DIR}/src/mailboxes.cpp
+        ${PROJECT_SOURCE_DIR}/src/message.cpp
+        ${PROJECT_SOURCE_DIR}/src/mime.cpp
+        ${PROJECT_SOURCE_DIR}/src/pop3.cpp
+        ${PROJECT_SOURCE_DIR}/src/quoted_printable.cpp
+        ${PROJECT_SOURCE_DIR}/src/q_codec.cpp
+        ${PROJECT_SOURCE_DIR}/src/smtp.cpp
+        )
 
 set(project_headers
-    ${PROJECT_SOURCE_DIR}/include/mailio/base64.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/binary.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/bit7.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/bit8.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/codec.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/dialog.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/imap.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/mailboxes.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/message.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/mime.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/pop3.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/quoted_printable.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/q_codec.hpp
-    ${PROJECT_SOURCE_DIR}/include/mailio/smtp.hpp
-        )
+        ${PROJECT_SOURCE_DIR}/include/mailio/base64.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/binary.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/bit7.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/bit8.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/codec.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/dialog.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/imap.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/mailboxes.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/message.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/mime.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/pop3.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/quoted_printable.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/q_codec.hpp
+        ${PROJECT_SOURCE_DIR}/include/mailio/smtp.hpp
+        examples/loop_fetch.cpp examples/MyThread.cpp examples/MyThread.cpp include/mailio/MyThead.h)
 
 # handle documentation
 if(${MAILIO_BUILD_DOCUMENTATION})
@@ -123,15 +127,15 @@ set(prefix "${CMAKE_INSTALL_PREFIX}")
 set(exec_prefix "\${prefix}" )
 
 if(IS_ABSOLUTE "${LIB_INSTALL_DIR}")
-  set(libdir "${LIB_INSTALL_DIR}")
+    set(libdir "${LIB_INSTALL_DIR}")
 else(IS_ABSOLUTE "${LIB_INSTALL_DIR}")
-  set(libdir "\${exec_prefix}/${LIB_INSTALL_DIR}")
+    set(libdir "\${exec_prefix}/${LIB_INSTALL_DIR}")
 endif(IS_ABSOLUTE "${LIB_INSTALL_DIR}")
 
 if(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
-  set(includedir "${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
+    set(includedir "${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
 else(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
-  set(includedir "\${prefix}/${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
+    set(includedir "\${prefix}/${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
 endif(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
 
 configure_file(mailio.pc.in ${CMAKE_BINARY_DIR}/mailio.pc IMMEDIATE @ONLY)
@@ -145,10 +149,10 @@ install(FILES ${CMAKE_BINARY_DIR}/version.hpp DESTINATION ${INCLUDE_INSTALL_DIR}
 include(GenerateExportHeader)
 generate_export_header(${PROJECT_NAME} EXPORT_FILE_NAME export.hpp)
 target_include_directories(${PROJECT_NAME}
-    PUBLIC
+        PUBLIC
         "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include;${CMAKE_CURRENT_BINARY_DIR}>"
         "$<INSTALL_INTERFACE:include>"
-)
+        )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp DESTINATION "${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
 
 if(Boost_FOUND)
@@ -165,14 +169,16 @@ if(MINGW)
     target_link_libraries(${PROJECT_NAME} -lws2_32 )
 endif(MINGW)
 
+target_link_libraries(${PROJECT_NAME} -lpthread -lboost_thread)
+
 install(DIRECTORY include/mailio DESTINATION ${INCLUDE_INSTALL_DIR})
 
 install(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Config
-    LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-    ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
-    RUNTIME DESTINATION ${BIN_INSTALL_DIR}
-)
+        EXPORT ${PROJECT_NAME}Config
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
+        RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+        )
 
 export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
 
