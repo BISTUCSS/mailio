@@ -2,15 +2,13 @@
 <project version="4">
   <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="49.232.155.160 (dfbfeea8-fe57-40e3-b6a2-6f494429c5fb)">
+      <paths name="Remote Host (1ab61e1f-45b7-4a5e-af93-789449bea2a4)">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/wenchao/Documents/Projects/C++/mail" local="$PROJECT_DIR$" web="/" />
-            <mapping local="" />
+            <mapping deploy="/home/wenchao/Documents/Projects/C++/mail" local="$PROJECT_DIR$" />
           </mappings>
           <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-49232155160" />
-            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug-49232155160" />
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
           </excludedPaths>
         </serverdata>
       </paths>

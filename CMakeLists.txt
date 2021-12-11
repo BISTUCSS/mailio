@@ -1,52 +1,49 @@
-cmake_minimum_required (VERSION 3.16.3)
+cmake_minimum_required(VERSION 3.16.3)
 
 project(mailio VERSION 0.21.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-
-
-
-if(NOT DEFINED LIB_SUFFIX)
+if (NOT DEFINED LIB_SUFFIX)
     set(LIB_SUFFIX "" CACHE STRING "Suffix for installed library path. Ex. 64 for lib64")
-endif(NOT DEFINED LIB_SUFFIX)
+endif (NOT DEFINED LIB_SUFFIX)
 
 # Set bindir, if not use -DBIN_INSTALL_DIR
-if(NOT BIN_INSTALL_DIR)
-    if(CMAKE_INSTALL_BINDIR)
+if (NOT BIN_INSTALL_DIR)
+    if (CMAKE_INSTALL_BINDIR)
         set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
-    else(CMAKE_INSTALL_BINDIR)
+    else (CMAKE_INSTALL_BINDIR)
         set(BIN_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
-    endif(CMAKE_INSTALL_BINDIR)
-endif(NOT BIN_INSTALL_DIR)
+    endif (CMAKE_INSTALL_BINDIR)
+endif (NOT BIN_INSTALL_DIR)
 
 # Set libdir, if not use -DLIB_INSTALL_DIR
-if(NOT LIB_INSTALL_DIR)
-    if(CMAKE_INSTALL_LIBDIR)
+if (NOT LIB_INSTALL_DIR)
+    if (CMAKE_INSTALL_LIBDIR)
         set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-    else(CMAKE_INSTALL_LIBDIR)
+    else (CMAKE_INSTALL_LIBDIR)
         set(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
-    endif(CMAKE_INSTALL_LIBDIR)
-endif(NOT LIB_INSTALL_DIR)
+    endif (CMAKE_INSTALL_LIBDIR)
+endif (NOT LIB_INSTALL_DIR)
 
 # Set includedir, if not use -DINCLUDE_INSTALL_DIR
-if(NOT INCLUDE_INSTALL_DIR)
-    if(CMAKE_INSTALL_INCLUDEDIR)
+if (NOT INCLUDE_INSTALL_DIR)
+    if (CMAKE_INSTALL_INCLUDEDIR)
         set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR})
-    else(CMAKE_INSTALL_INCLUDEDIR)
+    else (CMAKE_INSTALL_INCLUDEDIR)
         set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
-    endif(CMAKE_INSTALL_INCLUDEDIR)
-endif(NOT INCLUDE_INSTALL_DIR)
+    endif (CMAKE_INSTALL_INCLUDEDIR)
+endif (NOT INCLUDE_INSTALL_DIR)
 
 # Set sharedir, if not use -DSHARE_INSTALL_DIR
-if(NOT SHARE_INSTALL_DIR)
-    if(CMAKE_INSTALL_DATADIR)
+if (NOT SHARE_INSTALL_DIR)
+    if (CMAKE_INSTALL_DATADIR)
         set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}")
-    else(CMAKE_INSTALL_DATADIR)
+    else (CMAKE_INSTALL_DATADIR)
         set(SHARE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share")
-    endif(CMAKE_INSTALL_DATADIR)
-endif(NOT SHARE_INSTALL_DIR)
+    endif (CMAKE_INSTALL_DATADIR)
+endif (NOT SHARE_INSTALL_DIR)
 
 # options for mailio to control how the project is built.
 option(MAILIO_BUILD_DOCUMENTATION "Turn on to build doxygen based documentation." ON)
@@ -56,9 +53,9 @@ option(MAILIO_BUILD_EXAMPLES "Turn on to build examples." ON)
 include(CMakeDependentOption)
 cmake_dependent_option(MAILIO_BUILD_LATEX_DOCUMENTATION "Build latex docs" ON "MAILIO_BUILD_DOCUMENTATION" ON)
 
-if(WIN32)
+if (WIN32)
     set(Boost_USE_STATIC_LIBS ON)
-endif(WIN32)
+endif (WIN32)
 
 find_package(Boost REQUIRED COMPONENTS system date_time regex)
 find_package(OpenSSL)
@@ -83,6 +80,16 @@ set(project_sources
         ${PROJECT_SOURCE_DIR}/src/quoted_printable.cpp
         ${PROJECT_SOURCE_DIR}/src/q_codec.cpp
         ${PROJECT_SOURCE_DIR}/src/smtp.cpp
+        src/Thread/BaseThread.cpp
+
+        src/Allocator/TaskAllocator.cpp
+        src/Task/Task.cpp
+        src/utils/ConcurrentQueue.cpp
+        examples/TestThread.cpp
+
+        src/Thread/TaskAllocatorThread.cpp
+
+        src/Thread/TaskThread.cpp
         )
 
 set(project_headers
@@ -100,12 +107,17 @@ set(project_headers
         ${PROJECT_SOURCE_DIR}/include/mailio/quoted_printable.hpp
         ${PROJECT_SOURCE_DIR}/include/mailio/q_codec.hpp
         ${PROJECT_SOURCE_DIR}/include/mailio/smtp.hpp
-        examples/loop_fetch.cpp examples/MyThread.cpp examples/MyThread.cpp include/mailio/MyThead.h)
-
+        ${PROJECT_SOURCE_DIR}/include/myinclude/TaskAllocator.h
+        examples/loop_fetch.cpp examples/MyThread.cpp examples/MyThread.cpp examples/Test.cpp include/myinclude/BaseThread.h include/myinclude/Task.h src/Task/MsgTask.cpp
+        examples/TestThread.cpp
+        ${PROJECT_SOURCE_DIR}/include/myinclude/ConcurrentQueue.h
+        ${PROJECT_SOURCE_DIR}/include/myinclude/TaskThread.h
+        ${PROJECT_SOURCE_DIR}/include/myinclude/TaskAllocatorThread.h
+        )
 # handle documentation
-if(${MAILIO_BUILD_DOCUMENTATION})
+if (${MAILIO_BUILD_DOCUMENTATION})
     find_package(Doxygen COMPONENTS doxygen OPTIONAL_COMPONENTS dot)
-    if(DOXYGEN_FOUND)
+    if (DOXYGEN_FOUND)
         set(DOXYGEN_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/docs/mailio)
         set(DOXYGEN_GENERATE_LATEX ${MAILIO_BUILD_LATEX_DOCUMENTATION})
         set(DOXYGEN_OUTPUT_PATH ${DOCOUTDIR})
@@ -114,29 +126,29 @@ if(${MAILIO_BUILD_DOCUMENTATION})
 
         # install the documentation
         install(DIRECTORY ${DOXYGEN_OUTPUT_DIRECTORY} DESTINATION docs)
-    else(DOXYGEN_FOUND)
+    else (DOXYGEN_FOUND)
         message(STATUS "doxygen was not found, documentation will not be built")
-    endif(DOXYGEN_FOUND)
-endif(${MAILIO_BUILD_DOCUMENTATION})
+    endif (DOXYGEN_FOUND)
+endif (${MAILIO_BUILD_DOCUMENTATION})
 
 add_library(${PROJECT_NAME} ${project_sources} ${project_headers})
 
 
 # pkg-config support
 set(prefix "${CMAKE_INSTALL_PREFIX}")
-set(exec_prefix "\${prefix}" )
+set(exec_prefix "\${prefix}")
 
-if(IS_ABSOLUTE "${LIB_INSTALL_DIR}")
+if (IS_ABSOLUTE "${LIB_INSTALL_DIR}")
     set(libdir "${LIB_INSTALL_DIR}")
-else(IS_ABSOLUTE "${LIB_INSTALL_DIR}")
+else (IS_ABSOLUTE "${LIB_INSTALL_DIR}")
     set(libdir "\${exec_prefix}/${LIB_INSTALL_DIR}")
-endif(IS_ABSOLUTE "${LIB_INSTALL_DIR}")
+endif (IS_ABSOLUTE "${LIB_INSTALL_DIR}")
 
-if(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
+if (IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
     set(includedir "${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
-else(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
+else (IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
     set(includedir "\${prefix}/${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
-endif(IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
+endif (IS_ABSOLUTE "${INCLUDE_INSTALL_DIR}")
 
 configure_file(mailio.pc.in ${CMAKE_BINARY_DIR}/mailio.pc IMMEDIATE @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/mailio.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
@@ -155,19 +167,19 @@ target_include_directories(${PROJECT_NAME}
         )
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/export.hpp DESTINATION "${INCLUDE_INSTALL_DIR}/${PROJECT_NAME}")
 
-if(Boost_FOUND)
+if (Boost_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-endif()
+endif ()
 
-if(OPENSSL_FOUND)
+if (OPENSSL_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC ${OPENSSL_INCLUDE_DIR})
     target_link_libraries(${PROJECT_NAME} ${OPENSSL_LIBRARIES})
-endif()
+endif ()
 
-if(MINGW)
-    target_link_libraries(${PROJECT_NAME} -lws2_32 )
-endif(MINGW)
+if (MINGW)
+    target_link_libraries(${PROJECT_NAME} -lws2_32)
+endif (MINGW)
 
 target_link_libraries(${PROJECT_NAME} -lpthread -lboost_thread)
 
@@ -185,8 +197,8 @@ export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
 install(EXPORT ${PROJECT_NAME}Config DESTINATION share/${PROJECT_NAME}/cmake)
 
 # optionally build examples
-if(${MAILIO_BUILD_EXAMPLES})
+if (${MAILIO_BUILD_EXAMPLES})
     add_subdirectory(examples)
     file(GLOB PNGS "${PROJECT_SOURCE_DIR}/examples/*.png")
     install(FILES ${PNGS} DESTINATION "${SHARE_INSTALL_DIR}/${PROJECT_NAME}/examples/")
-endif(${MAILIO_BUILD_EXAMPLES})
+endif (${MAILIO_BUILD_EXAMPLES})

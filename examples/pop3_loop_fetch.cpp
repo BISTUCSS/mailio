@@ -13,14 +13,13 @@ copy at http://www.freebsd.org/copyright/freebsd-license.html.
 
 */
 
-
 #include <mailio/message.hpp>
 #include <mailio/pop3.hpp>
 #include <boost/thread.hpp>
 #include <iostream>
-//#include "MyThread.h"
-#include "mailio/MyThead.h"
+#include "vector"
 
+#include "myinclude/TaskAllocatorThread.h"
 
 using mailio::message;
 using mailio::codec;
@@ -30,26 +29,48 @@ using mailio::dialog_error;
 using std::cout;
 using std::endl;
 
+class MsgTask : public Task {
+private:
 
-class MsgThread : public Thread {
-    message msg;
+    mailio::message msg;
+
+    bool is_finished;
+
 public:
-    MsgThread(int a, message &msg) : Thread(a) {
-        this->msg = msg;
+
+    MsgTask(mailio::message &_msg) : msg(_msg) {
+        is_finished = false;
     }
 
-    void run() {
+    void execute() {
         cout << msg.content() << endl;
+        usleep(100000);
+        is_finished = true;
+    }
+
+    bool is_finish() {
+        return is_finished;
     }
 };
 
-void handle(message msg) {
-    cout << "current mail content: " << msg.content() << endl;
-    cout << endl;
+
+
+void initAllocatorThread(TaskAllocatorThread* taskAllocatorThread) {
+    for(int i = 0; i < 10; i++) {
+        taskAllocatorThread->add_task_thread(*new TaskThread());
+    }
 }
 
 int main() {
     try {
+
+        TaskAllocatorThread *taskAllocatorThread = new TaskAllocatorThread();
+
+        initAllocatorThread(taskAllocatorThread);
+
+        taskAllocatorThread->start();
+
+
         // mail message to store the fetched one
         message msg;
         // set the line policy to mandatory, so longer lines could be parsed
@@ -64,7 +85,7 @@ int main() {
         unsigned long mail_cursor = 1;
         unsigned long mail_no = 0;
         while (true) {
-
+//            pthread_cond_wait
             // mail message to store the fetched one
             message msg;
             // set the line policy to mandatory, so longer lines could be parsed
@@ -80,7 +101,9 @@ int main() {
                 conn.fetch(mail_cursor, msg);
                 //boost::thread thread(handle);
 
-                (new MsgThread(1, msg))->start();
+                taskAllocatorThread->receive_task(*(new MsgTask(msg)));
+
+//                (new MsgThread(1, <#initializer#>))->start();
 
                 mail_cursor++;
             }
